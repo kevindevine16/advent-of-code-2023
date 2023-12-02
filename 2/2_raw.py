@@ -113,3 +113,13 @@ data['power'] = data['minimum_reds_needed']*data['minimum_greens_needed']*data['
 
 data['power'].sum()
 
+
+# In[9]:
+
+
+def convert_to_py(prefix:str):
+    from IPython import get_ipython
+    get_ipython().system(f'jupyter nbconvert --to script {prefix}.ipynb --output {prefix}_raw')
+
+convert_to_py('2')
+
