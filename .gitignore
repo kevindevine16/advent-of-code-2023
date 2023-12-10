@@ -164,7 +164,7 @@ cython_debug/
 *.txt
 
 # Incomplete Attempts
-3.ipynb
-3_raw.py
+# 3.ipynb
+# 3_raw.py
 5.ipynb
 5_raw.py
