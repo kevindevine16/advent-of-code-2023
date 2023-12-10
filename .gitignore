@@ -162,3 +162,9 @@ cython_debug/
 # Data types
 *.csv
 *.txt
+
+# Incomplete Attempts
+3.ipynb
+3_raw.py
+5.ipynb
+5_raw.py
