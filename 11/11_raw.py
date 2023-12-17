@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import numpy as np
@@ -11,7 +11,7 @@ import os
 pd.set_option('display.max_rows', 10)
 
 
-# In[3]:
+# In[2]:
 
 
 data_path = os.path.join('Data','input.txt')
@@ -21,19 +21,7 @@ data.rename(columns={0:'inputs'},inplace = True)
 data
 
 
-# In[33]:
-
-
-a = np.array([list(x) for x in data['inputs']])
-
-
-# In[55]:
-
-
-a.shape
-
-
-# In[86]:
+# In[3]:
 
 
 a = np.array([list(x) for x in data['inputs']], dtype='U25')
@@ -50,20 +38,21 @@ def RowsAndColumnsNoGalaxy(a:np.ndarray)->tuple:
 rows_with_no_galaxy, columns_with_no_galaxy = RowsAndColumnsNoGalaxy(a)
 
 
-# In[87]:
+# In[4]:
 
 
 insert_count = 0
+row_insert_index = []
 for i in rows_with_no_galaxy:
-    a = np.insert(a, [i+insert_count], [['.']], axis = 0)
-    insert_count += 1
+    row_insert_index.append(i+insert_count)
+
 insert_count = 0
+column_insert_index = []
 for j in columns_with_no_galaxy:
-    a = np.insert(a, [j+insert_count], [['.']], axis = 1)
-    insert_count += 1
+    column_insert_index.append(j+insert_count)
 
 
-# In[88]:
+# In[5]:
 
 
 no_of_galaxys = 0
@@ -77,21 +66,72 @@ for i in range(a.shape[0]):
 no_of_galaxys
 
 
-# In[68]:
+# In[6]:
 
 
-no_of_galaxy_pairs = int(no_of_galaxys*(no_of_galaxys+1)/2)
+no_of_galaxy_pairs = int(no_of_galaxys*(no_of_galaxys+1)/2)-no_of_galaxys
 no_of_galaxy_pairs
 
 
-# In[ ]:
+# In[7]:
 
 
+galaxy_pairs = []
+counter = 0
+for k in range(len(galaxy_indices)):
+    for m in range(k+1,len(galaxy_indices)):
+        galaxy_pairs.append([galaxy_indices[k],galaxy_indices[m]])
+        counter+=1
+        pass
+counter
 
 
-
-# In[ ]:
-
+# In[8]:
 
 
+distance_sums = 0
+for i in range(len(galaxy_pairs)):
+    for row_index in row_insert_index:
+        if row_index in range(galaxy_pairs[i][0][0],galaxy_pairs[i][1][0]) or row_index in range(galaxy_pairs[i][1][0],galaxy_pairs[i][0][0]):
+            distance_sums += 2-1
+    for column_index in column_insert_index:
+        if column_index in range(galaxy_pairs[i][0][1],galaxy_pairs[i][1][1]) or column_index in range(galaxy_pairs[i][1][1],galaxy_pairs[i][0][1]):
+            distance_sums += 2-1
+    distance_sums += abs(galaxy_pairs[i][0][0]-galaxy_pairs[i][1][0])+abs(galaxy_pairs[i][0][1]-galaxy_pairs[i][1][1])
+
+
+# In[9]:
+
+
+distance_sums
+
+
+# In[10]:
+
+
+distance_sums = 0
+for i in range(len(galaxy_pairs)):
+    for row_index in row_insert_index:
+        if row_index in range(galaxy_pairs[i][0][0],galaxy_pairs[i][1][0]) or row_index in range(galaxy_pairs[i][1][0],galaxy_pairs[i][0][0]):
+            distance_sums += int(1e6)-1
+    for column_index in column_insert_index:
+        if column_index in range(galaxy_pairs[i][0][1],galaxy_pairs[i][1][1]) or column_index in range(galaxy_pairs[i][1][1],galaxy_pairs[i][0][1]):
+            distance_sums += int(1e6)-1
+    distance_sums += abs(galaxy_pairs[i][0][0]-galaxy_pairs[i][1][0])+abs(galaxy_pairs[i][0][1]-galaxy_pairs[i][1][1])
+
+
+# In[11]:
+
+
+distance_sums
+
+
+# In[12]:
+
+
+import sys
+sys.path.append(os.pardir)
+from src.HelperFunctions import convert_to_py
+
+convert_to_py('11')
 
