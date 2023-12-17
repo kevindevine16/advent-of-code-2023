@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[2]:
+# In[1]:
 
 
 import numpy as np
@@ -11,7 +11,7 @@ import os
 pd.set_option('display.max_rows', 10)
 
 
-# In[3]:
+# In[2]:
 
 
 data_path = os.path.join('Data','input.txt')
@@ -21,24 +21,11 @@ data.rename(columns={0:'inputs'},inplace = True)
 data
 
 
-# In[4]:
+# In[3]:
 
 
 a = np.array([list(x) for x in data['inputs']])
-a.shape
-
-
-# In[5]:
-
-
-a
-
-
-# In[62]:
-
-
-a = np.array([list(x) for x in data['inputs']])
-def FindStart(a):
+def FindStart(a: np.ndarray) -> tuple:
     Start_Index = []
     Second_Indices = []
     Second_Elements = []
@@ -60,59 +47,26 @@ def FindStart(a):
     if (a[i-1][j] == '7') or (a[i-1][j] == 'F') or (a[i-1][j] == '|'):
         Second_Indices.append([i-1,j])
         Second_Elements.append(a[i-1,j])
-    #a[a == 'S'] = 0
-    #print(Second_Indices)
-    #Second_Indices = [np.array(element) for element in Second_Indices]
+    
     return Start_Index[0], Second_Indices, Second_Elements
 
 Start_Index, Second_Indices, Second_Elements = FindStart(a)
-Second_Indices = FindStart(a)[1]
-Start_Index
-Second_Indices
-#Second_Elements
 
 
-# In[7]:
+# In[4]:
 
 
-Start_Index + np.array([1,0])
-
-
-# In[64]:
-
-
-Second_Indices
-
-
-# In[65]:
-
-
-Second_Elements
-
-
-# In[94]:
-
-
-def FindDistances(Start_Index,
-                  Second_Indices,
-                  Second_Elements, a):
-    
+def FindPipeIndices(Start_Index:list,
+                  Second_Indices:list,
+                  Second_Elements:list, 
+                  a:np.ndarray)->list:
     first_previous_i = Start_Index[0]
     first_previous_j = Start_Index[1]
-    second_previous_i = Start_Index[0]
-    second_previous_j = Start_Index[1]
     first_next_i = Second_Indices[0][0]
     first_next_j = Second_Indices[0][1]
+    pipe_indices = [[first_previous_i,first_previous_j],[first_next_i, first_next_j]]
     first_next_element = Second_Elements[0]
-    second_next_i = Second_Indices[1][0]
-    second_next_j = Second_Indices[1][1]
-    second_next_element = Second_Elements[1]
-    distance = 0
-    
-    while (~(first_next_i != second_next_i) and ~(first_next_j != second_next_j)) or ():
-    # for _ in range(20):
-        print(first_next_element)
-        #print(a[first_next_i, first_next_j])
+    while a[first_next_i][first_next_j] != 'S':
         if (first_next_element == 'F'): 
             if (first_next_j < first_previous_j):
                 first_previous_i = first_next_i
@@ -149,11 +103,9 @@ def FindDistances(Start_Index,
                 first_previous_j = first_next_j
                 first_next_j += 1
             else:
-                #print('SHouldnt print',first_next_i,first_previous_i)
                 first_previous_i = first_next_i
                 first_previous_j = first_next_j
                 first_next_i -= 1
-            #print(first_previous_i,first_previous_j)
             first_next_element = a[first_next_i,first_next_j]
         elif (first_next_element == '7'):
             if (first_next_i < first_previous_i):
@@ -175,118 +127,57 @@ def FindDistances(Start_Index,
                 first_previous_j = first_next_j
                 first_next_i -= 1
             first_next_element = a[first_next_i,first_next_j]
-        elif (first_next_element == 'S'):
+        elif(first_next_element == 'S'):
             pass
         else:
             raise Exception
-        
-        #print(second_next_element)
-        # print(second_next_i,second_next_j)
-        # print(second_previous_i,second_previous_j)
-        if (second_next_element == 'F'): 
-            
-            if (second_next_j < second_previous_j):
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_i +=1
-            else: 
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_j += 1
-            
-            second_next_element = a[second_next_i,second_next_j]
-        elif (second_next_element == '|'):
-            if (second_next_i < second_previous_i):
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_i -= 1
-            else: 
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_i += 1
-            second_next_element = a[second_next_i,second_next_j]
-        elif (second_next_element == '-'):
-            if (second_next_j < second_previous_j):
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_j -= 1
-            else: 
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_j += 1
-            second_next_element = a[second_next_i,second_next_j]
-        elif (second_next_element == 'L'):
-            if (second_next_i > second_previous_i):
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_j += 1
-            else:
-                #print('SHouldnt print',first_next_i,first_previous_i)
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_i -= 1
-            #print(first_previous_i,first_previous_j)
-            second_next_element = a[second_next_i,second_next_j]
-        elif (second_next_element == '7'):
-            if (second_next_i < second_previous_i):
-                second_previous_i = second_next_i 
-                second_previous_j = second_next_j
-                #print(second_previous_i,second_previous_j)
-                second_next_j -= 1
-                #print(second_next_j)
-            else: 
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                #print(second_previous_i)
-                second_next_i += 1
-            second_next_element = a[second_next_i,second_next_j]
-        elif (second_next_element == 'J'):
-            if (second_next_i > second_previous_i):
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_j -= 1
-            else: 
-                second_previous_i = second_next_i
-                second_previous_j = second_next_j
-                second_next_i -= 1
-            second_next_element = a[second_next_i,second_next_j]
-        else:
-            pass
-            #raise Exception
-        distance+=1
+
+        pipe_indices.append([first_next_i, first_next_j])
 
         pass
 
-    return distance
+    return pipe_indices
 
 
-# In[95]:
+# In[5]:
 
 
-FindDistances(Start_Index,
-                  Second_Indices,
-                  Second_Elements, a)
+pipe_indices = FindPipeIndices(Start_Index,
+                             Second_Indices,
+                             Second_Elements, 
+                             a)
+distance_from_animal = int(len(pipe_indices[0:-1])/2)
+distance_from_animal
 
 
-# In[ ]:
+# [Shoelace formula](https://en.wikipedia.org/wiki/Shoelace_formula) to get area enclosed by pipe.
+
+# In[6]:
 
 
+def GetArea(pipe_indices:list)->int:
+    Area = 0
+    for k in range(len(pipe_indices[0:-1])):
+        Area += 0.5*np.linalg.det(np.array([pipe_indices[k],pipe_indices[k+1]]).transpose())
+    return int(abs(Area))
 
 
-
-# In[ ]:
-
+# In[7]:
 
 
+Area = GetArea(pipe_indices)
 
 
-# In[ ]:
+# [Pick's theorem](https://en.wikipedia.org/wiki/Pick%27s_theorem) to find number of interior points.
+
+# In[8]:
 
 
+interior_points = Area - distance_from_animal - 0 + 1
+interior_points
 
 
-
-# In[ ]:
+# In[9]:
 
 
 import sys
